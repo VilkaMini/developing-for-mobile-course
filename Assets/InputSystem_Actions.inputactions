@@ -997,7 +997,7 @@
             "id": "a8d0fdcc-6464-4a78-8111-1213d251e537",
             "actions": [
                 {
-                    "name": "TouchInput",
+                    "name": "PrimaryTouchPos",
                     "type": "PassThrough",
                     "id": "877f4000-e848-43c4-9326-778d43a1f470",
                     "expectedControlType": "",
@@ -1007,12 +1007,21 @@
                 },
                 {
                     "name": "TouchHold",
-                    "type": "Value",
+                    "type": "Button",
                     "id": "0cbb2315-2be2-482a-b8df-df962ec08fa1",
-                    "expectedControlType": "Touch",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "SecondaryTouchPos",
+                    "type": "PassThrough",
+                    "id": "b71aeb3f-0d74-41a4-9319-08217fb3cace",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -1023,7 +1032,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "TouchInput",
+                    "action": "PrimaryTouchPos",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -1035,6 +1044,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "TouchHold",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1e9bfa09-92c5-4a1b-a4d8-6031883df774",
+                    "path": "<Touchscreen>/touch1/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SecondaryTouchPos",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

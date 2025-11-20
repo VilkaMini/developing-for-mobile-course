@@ -2,7 +2,10 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
+using UnityEngine.UIElements;
 using static UnityEditor.PlayerSettings;
+using static UnityEngine.InputSystem.Controls.AxisControl;
+using static UnityEngine.RuleTile.TilingRuleOutput;
 
 public class BasketController : MonoBehaviour
 {
@@ -15,16 +18,21 @@ public class BasketController : MonoBehaviour
     private float m_accelerationX;
 
     private InputAction primaryTouch;
+    private InputAction secondaryTouch;
     private InputAction primaryTouchHold;
 
     // Managers
     [SerializeField]
     private ScoringManager scoringManager;
 
+    float lastPinchDist;
+    bool hadLastPinch = false;
+
     private void Awake()
     {
         m_moveAction = InputSystem.actions.FindAction("Move");
-        primaryTouch = InputSystem.actions.FindAction("TouchInput");
+        primaryTouch = InputSystem.actions.FindAction("PrimaryTouchPos");
+        secondaryTouch = InputSystem.actions.FindAction("SecondaryTouchPos");
         primaryTouchHold = InputSystem.actions.FindAction("TouchHold");
     }
 
@@ -47,8 +55,7 @@ public class BasketController : MonoBehaviour
             print("Complete");
         }
         */
-        
-        
+
         // Do the magic (movement)
         if (Mathf.Abs(m_accelerationX) > 0.1) // 0.1 here is a cutoff so that the basket would not drift
         {
@@ -60,25 +67,62 @@ public class BasketController : MonoBehaviour
             newPos = transform.position +  new Vector3(m_moveAmt[0] * speed * Time.deltaTime, 0, 0);
         }
 
+        // Commented out the touch input for moving basket (defeats purpose)
+        /*
         if (primaryTouchHold.ReadValue<float>() > 0)
         {
             Vector2 touchPos = primaryTouch.ReadValue<Vector2>();
             float direction = (touchPos.x < Screen.width * 0.5f) ? -1f : 1f;
             newPos = transform.position + Vector3.right * direction * speed * Time.deltaTime;
         }
+        */
 
         newPos.x = Mathf.Clamp(newPos.x, -2.3f, 2.3f);
-
         transform.position = newPos;
+
+        var ts = Touchscreen.current;
+        if (ts == null) return;
+
+        var touches = ts.touches;
+        int active = 0;
+        foreach (var t in touches)
+            if (t.press.isPressed) active++;
+
+        if (active >= 2)
+        {
+            // Get first two touches
+            Vector2 p1 = touches[0].position.ReadValue();
+            Vector2 p2 = touches[1].position.ReadValue();
+
+            float dist = Vector2.Distance(p1, p2);
+
+            if (hadLastPinch)
+            {
+                float delta = dist - lastPinchDist;
+                float scale = delta * 0.005f;
+
+                float tempScale = Mathf.Clamp(transform.localScale.x + scale, 0.2f, 1.8f);
+                transform.localScale = new Vector3(tempScale, tempScale, transform.localScale.z);
+            }
+
+            lastPinchDist = dist;
+            hadLastPinch = true;
+        }
+        else
+        {
+            hadLastPinch = false;
+        }
+
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("FallingItem"))
         {
-            scoringManager.ItemCaught();
+            scoringManager.ItemCaught(transform.localScale.x);
             Destroy(collision.gameObject);
         }
     }
+ 
 
 }
