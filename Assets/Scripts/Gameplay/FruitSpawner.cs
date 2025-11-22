@@ -6,25 +6,23 @@ public class FruitSpawner : MonoBehaviour
     [SerializeField]
     GameObject FruitPrefab;
 
+    public bool GameRunning;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        GameRunning = true;
         StartCoroutine(SpawnItem());
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     private IEnumerator SpawnItem()
     {
-        while (true)
+        while (GameRunning)
         {
             GameObject item = Instantiate(FruitPrefab);
             item.transform.position = new Vector3(Random.Range(-2, 2), 4, 0);
             yield return new WaitForSeconds(2);
         }
+        yield return new WaitForSeconds(1);
     }
 }

@@ -9,6 +9,8 @@ using static UnityEngine.RuleTile.TilingRuleOutput;
 
 public class BasketController : MonoBehaviour
 {
+    public bool GameRunning = true;
+
     [SerializeField]
     public float speed = 5f;
 
@@ -39,6 +41,11 @@ public class BasketController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!GameRunning)
+        {
+            return;
+        }
+
         // Set initial values
         Vector3 newPos = transform.position;
         m_moveAmt = m_moveAction.ReadValue<Vector2>();
