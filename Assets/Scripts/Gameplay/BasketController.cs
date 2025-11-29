@@ -127,8 +127,12 @@ public class BasketController : MonoBehaviour
         if (collision.CompareTag("FallingItem"))
         {
             scoringManager.ItemCaught(transform.localScale.x);
-            Destroy(collision.gameObject);
         }
+        else if (collision.CompareTag("FallingTrash"))
+        {
+            scoringManager.TrashCaught();
+        }
+        Destroy(collision.gameObject);
     }
  
 

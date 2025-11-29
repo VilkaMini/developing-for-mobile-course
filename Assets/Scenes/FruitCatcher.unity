@@ -384,7 +384,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FruitSpawner
   FruitPrefab: {fileID: 6053799142022710085, guid: 558d874fe3d942c4586a8cf8a9a22fd0, type: 3}
+  TrashPrefab: {fileID: 6053799142022710085, guid: b41ea2427f6f0e246a9eb418f918ffe5, type: 3}
+  itemSprites:
+  - {fileID: -4672942043321612591, guid: 4286207def0d7ef4e9c197bd38260625, type: 3}
+  - {fileID: 7381965769198725172, guid: 82d44dee81ad0804ebcc8e62b6fb4f55, type: 3}
+  - {fileID: -1435901459259225544, guid: 0103e7c0f46a3ee4881577e8e3e528a4, type: 3}
+  - {fileID: 8025649199667744028, guid: b055771c1846aa941b36e766c77526aa, type: 3}
+  - {fileID: -8113185096396602001, guid: 35709982117cc5a448df173caa9738be, type: 3}
   GameRunning: 0
+  currentItem: {fileID: 0}
 --- !u!114 &336843812
 MonoBehaviour:
   m_ObjectHideFlags: 0
