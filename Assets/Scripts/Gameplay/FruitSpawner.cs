@@ -24,6 +24,11 @@ public class FruitSpawner : MonoBehaviour
         StartCoroutine(SpawnItem());
     }
 
+    public void RunLogic(bool run)
+    {
+        GameRunning = run;
+    }
+
     private Sprite DetermineSpawnItem()
     {
         return itemSprites[Random.Range(0, itemSprites.Count)];

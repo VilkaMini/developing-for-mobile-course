@@ -9,7 +9,7 @@ public class ScoringManager : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI scoreText;
 
-    private float score = 0;
+    public float score = 0;
 
     private void Start()
     {
@@ -19,11 +19,16 @@ public class ScoringManager : MonoBehaviour
     public void ItemCaught(float currentBasketScale)
     {
         score += 1 * (2 - currentBasketScale);
-        scoreText.text = score.ToString();
+        UpdateScore();
     }
 
     public void TrashCaught()
     {
         heartManager.LoseLife();
+    }
+
+    public void UpdateScore()
+    {
+        scoreText.text = score.ToString();
     }
 }

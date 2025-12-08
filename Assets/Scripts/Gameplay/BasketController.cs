@@ -36,6 +36,13 @@ public class BasketController : MonoBehaviour
         primaryTouch = InputSystem.actions.FindAction("PrimaryTouchPos");
         secondaryTouch = InputSystem.actions.FindAction("SecondaryTouchPos");
         primaryTouchHold = InputSystem.actions.FindAction("TouchHold");
+        gameObject.SetActive(false);
+    }
+
+    public void RunLogic(bool run)
+    {
+        GameRunning = run;
+        gameObject.SetActive(run);
     }
 
     // Update is called once per frame
