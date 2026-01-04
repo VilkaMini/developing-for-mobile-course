@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SocialPlatforms.Impl;
@@ -10,6 +11,7 @@ public class ScoringManager : MonoBehaviour
     private TextMeshProUGUI scoreText;
 
     public float score = 0;
+    private float scoreMultiplier = 1f;
 
     private void Start()
     {
@@ -18,8 +20,13 @@ public class ScoringManager : MonoBehaviour
 
     public void ItemCaught(float currentBasketScale)
     {
-        score += 1 * (2 - currentBasketScale);
+        score += 1 * (2 - currentBasketScale) * scoreMultiplier;
         UpdateScore();
+    }
+
+    public void SetScoreMultiplier(float level)
+    {
+        scoreMultiplier = 1 + level / 10f;
     }
 
     public void TrashCaught()
@@ -29,6 +36,12 @@ public class ScoringManager : MonoBehaviour
 
     public void UpdateScore()
     {
-        scoreText.text = score.ToString();
+        scoreText.text = Math.Round(score, 2).ToString();
+    }
+
+    public void RewardForAdd()
+    {
+        score = score * 2;
+        UpdateScore();
     }
 }

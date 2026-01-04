@@ -15,7 +15,11 @@ public class UpgradeUIHandler : MonoBehaviour
     [SerializeField]
     TextMeshProUGUI upgradeButtonText;
 
+    [SerializeField]
+    TextMeshProUGUI upgradeCostText;
+
     int upgradeLevel = 1;
+    int upgradeCost = 1;
 
     public void UpgradeClicked()
     {
@@ -23,9 +27,10 @@ public class UpgradeUIHandler : MonoBehaviour
         {
             return;
         }
-        if (gameManager.TryToUpgrade(upgradeType, upgradeLevel, 1))
+        if (gameManager.TryToUpgrade(upgradeType, upgradeLevel, upgradeCost))
         {
             upgradeLevel++;
+            upgradeCost++;
             RegisterUpgrade();
         }
     }
@@ -35,10 +40,12 @@ public class UpgradeUIHandler : MonoBehaviour
         if (upgradeLevel == 5)
         {
             upgradeButtonText.text = "Max";
+            upgradeCostText.text = "";
         }
         else
         {
             upgradeButtonText.text = $"Level {upgradeLevel}";
+            upgradeCostText.text = $"{upgradeCost}";
         }
     }
 }

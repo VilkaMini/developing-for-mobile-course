@@ -12,7 +12,10 @@ public class BasketController : MonoBehaviour
     public bool GameRunning = true;
 
     [SerializeField]
+    private float baseSpeed = 5.0f;
     public float speed = 5f;
+
+    private float adjustedScale = 0.0f;
 
     // Movement
     private InputAction m_moveAction;
@@ -43,6 +46,17 @@ public class BasketController : MonoBehaviour
     {
         GameRunning = run;
         gameObject.SetActive(run);
+    }
+
+    public void SetBasketLevel(float level)
+    {
+        adjustedScale = level / 10f;
+        transform.localScale = Vector3.one + Vector3.one * level/10f;
+    }
+
+    public void SetBasketSpeed(float level)
+    {
+        speed = baseSpeed + level;
     }
 
     // Update is called once per frame
@@ -115,7 +129,7 @@ public class BasketController : MonoBehaviour
                 float delta = dist - lastPinchDist;
                 float scale = delta * 0.005f;
 
-                float tempScale = Mathf.Clamp(transform.localScale.x + scale, 0.2f, 1.8f);
+                float tempScale = Mathf.Clamp(transform.localScale.x + scale, 0.2f, 1.8f + adjustedScale);
                 transform.localScale = new Vector3(tempScale, tempScale, transform.localScale.z);
             }
 
@@ -133,7 +147,7 @@ public class BasketController : MonoBehaviour
     {
         if (collision.CompareTag("FallingItem"))
         {
-            scoringManager.ItemCaught(transform.localScale.x);
+            scoringManager.ItemCaught(transform.localScale.x - adjustedScale);
         }
         else if (collision.CompareTag("FallingTrash"))
         {

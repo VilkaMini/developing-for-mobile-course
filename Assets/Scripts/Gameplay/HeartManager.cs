@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEditor.Experimental.AssetDatabaseExperimental.AssetDatabaseCounters;
 
 public class HeartManager : MonoBehaviour
 {
@@ -26,6 +27,14 @@ public class HeartManager : MonoBehaviour
         if (counter == heartList.Count - 1)
         {
             gameManager.EndGame();
+        }
+    }
+
+    public void ResetLifes()
+    {
+        for (int i = 0; i < heartList.Count; i++)
+        {
+            heartList[i].SetHeartStatus(true);
         }
     }
 }

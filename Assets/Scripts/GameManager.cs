@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public enum UpgradeType
@@ -29,10 +30,26 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     ScoringManager scoringManager;
 
+    [SerializeField]
+    HeartManager heartManager;
+
+    [SerializeField] 
+    UnityAdsManager adManager;
+
+    [SerializeField]
+    Dictionary<UpgradeType, int> upgradeCounts = new Dictionary<UpgradeType, int>();
+
+    private bool runActive = false;
+
     private void Start()
     {
         StopGame();
         ToggleUpgrades(false);
+        ToggleAddScreen(false);
+        upgradeCounts.Add(UpgradeType.Basket, 0);
+        upgradeCounts.Add(UpgradeType.Speed, 0);
+        upgradeCounts.Add(UpgradeType.Hearts, 0);
+        upgradeCounts.Add(UpgradeType.Multiplier, 0);
     }
 
     public void StopGame()
@@ -51,23 +68,50 @@ public class GameManager : MonoBehaviour
         basketController.RunLogic(true);
         fruitSpawner.RunLogic(true);
         ToggleMainMenu(false);
+
+        if (!runActive)
+        {
+            runActive = true;
+        }
     }
 
     public void EndGame()
     {
-        StopGame();
-        print("Game Ends");
+        adManager.LoadAd();
+        basketController.RunLogic(false);
+        fruitSpawner.RunLogic(false);
+        if (fruitSpawner.currentItem)
+        {
+            Destroy(fruitSpawner.currentItem);
+        }
+        runActive = false;
+        heartManager.ResetLifes();
+        ToggleAddScreen(true);
     }
 
     // UI functions
     public void ToggleUpgrades(bool open)
     {
-        upgradeMenuUI.SetActive(open);
+        if (!runActive) 
+        {
+            upgradeMenuUI.SetActive(open);
+        }
     }
 
     public void ToggleMainMenu(bool open)
     {
         standardMenuUI.SetActive(open);
+    }
+
+    public void ToggleAddScreen(bool open)
+    {
+        watchAddMenuUI.SetActive(open);
+        standardMenuUI.SetActive(!open);
+    }
+
+    public void GiveRewardForAdd()
+    {
+        scoringManager.RewardForAdd();
     }
 
     public bool TryToUpgrade(UpgradeType upgradeType, int currentLevel, float moneyRequired)
@@ -76,6 +120,9 @@ public class GameManager : MonoBehaviour
         {
             scoringManager.score -= moneyRequired;
             scoringManager.UpdateScore();
+
+            upgradeCounts[upgradeType] = currentLevel + 1;
+            RunUpgradeUpdate(upgradeType);
             return true;
         }
         else
@@ -83,5 +130,25 @@ public class GameManager : MonoBehaviour
             return false;
         }
         
+    }
+
+    public void RunUpgradeUpdate(UpgradeType upgradeType)
+    {
+        switch (upgradeType)
+        {
+            case UpgradeType.Basket:
+                basketController.SetBasketLevel(upgradeCounts[upgradeType]);
+                break;
+            case UpgradeType.Speed:
+                basketController.SetBasketSpeed(upgradeCounts[upgradeType]);
+                break;
+            case UpgradeType.Hearts:
+                print("Increase hearts not implemented");
+                break;
+            case UpgradeType.Multiplier:
+                scoringManager.SetScoreMultiplier(upgradeCounts[upgradeType]);
+                break;
+        }
+
     }
 }
