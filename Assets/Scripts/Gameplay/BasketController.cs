@@ -3,9 +3,6 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
 using UnityEngine.UIElements;
-using static UnityEditor.PlayerSettings;
-using static UnityEngine.InputSystem.Controls.AxisControl;
-using static UnityEngine.RuleTile.TilingRuleOutput;
 
 public class BasketController : MonoBehaviour
 {
@@ -40,6 +37,9 @@ public class BasketController : MonoBehaviour
         secondaryTouch = InputSystem.actions.FindAction("SecondaryTouchPos");
         primaryTouchHold = InputSystem.actions.FindAction("TouchHold");
         gameObject.SetActive(false);
+
+        if (Accelerometer.current != null)
+            InputSystem.EnableDevice(Accelerometer.current);
     }
 
     public void RunLogic(bool run)
@@ -70,19 +70,8 @@ public class BasketController : MonoBehaviour
         // Set initial values
         Vector3 newPos = transform.position;
         m_moveAmt = m_moveAction.ReadValue<Vector2>();
-        m_accelerationX = Input.acceleration.x;
-
-        //print(primaryTouch.IsPressed());
-        //print(primaryTouch.ReadValue<Vector2>());
-        /*
-        if (primaryTouch.WasPerformedThisFrame())
-        {
-            print("Perform");
-        }
-        if (primaryTouch.WasReleasedThisFrame()) {
-            print("Complete");
-        }
-        */
+        m_accelerationX = Accelerometer.current.acceleration.ReadValue().x;
+        Debug.Log(Accelerometer.current.acceleration.ReadValue());
 
         // Do the magic (movement)
         if (Mathf.Abs(m_accelerationX) > 0.1) // 0.1 here is a cutoff so that the basket would not drift

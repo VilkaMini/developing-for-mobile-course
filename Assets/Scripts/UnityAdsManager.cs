@@ -8,6 +8,8 @@ public class UnityAdsManager : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsSh
     [SerializeField] string _androidAdUnitId = "Rewarded_Android";
     [SerializeField] string _iOSAdUnitId = "Rewarded_iOS";
     string _adUnitId = null; // This will remain null for unsupported platforms
+    private string gameIdAndroid = "6018765";
+
 
     [SerializeField] GameManager _gameManager;
 
@@ -22,6 +24,8 @@ public class UnityAdsManager : MonoBehaviour, IUnityAdsLoadListener, IUnityAdsSh
 
         // Disable the button until the ad is ready to show:
         _showAdButton.interactable = false;
+
+        Advertisement.Initialize(gameIdAndroid);
     }
 
     // Call this public method when you want to get an ad ready to show.

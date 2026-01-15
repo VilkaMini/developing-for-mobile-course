@@ -10,6 +10,13 @@ public enum UpgradeType
     Multiplier
 }
 
+public enum SettingType
+{
+    Music,
+    Sound,
+    Sensitivity
+}
+
 public class GameManager : MonoBehaviour
 {
     [SerializeField]
@@ -23,6 +30,9 @@ public class GameManager : MonoBehaviour
 
     [SerializeField]
     GameObject upgradeMenuUI;
+
+    [SerializeField]
+    GameObject settingsMenuUI;
 
     [SerializeField]
     FruitSpawner fruitSpawner;
@@ -46,6 +56,7 @@ public class GameManager : MonoBehaviour
         StopGame();
         ToggleUpgrades(false);
         ToggleAddScreen(false);
+        ToggleSettings(false);
         upgradeCounts.Add(UpgradeType.Basket, 0);
         upgradeCounts.Add(UpgradeType.Speed, 0);
         upgradeCounts.Add(UpgradeType.Hearts, 0);
@@ -96,6 +107,11 @@ public class GameManager : MonoBehaviour
         {
             upgradeMenuUI.SetActive(open);
         }
+    }
+
+    public void ToggleSettings(bool open)
+    {
+        settingsMenuUI.SetActive(open);
     }
 
     public void ToggleMainMenu(bool open)
