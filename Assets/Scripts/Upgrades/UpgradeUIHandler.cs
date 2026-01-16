@@ -30,7 +30,7 @@ public class UpgradeUIHandler : MonoBehaviour
         if (gameManager.TryToUpgrade(upgradeType, upgradeLevel, upgradeCost))
         {
             upgradeLevel++;
-            upgradeCost++;
+            upgradeCost = upgradeLevel * 2;
             RegisterUpgrade();
         }
     }

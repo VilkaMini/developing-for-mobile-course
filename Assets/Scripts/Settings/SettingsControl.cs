@@ -8,6 +8,9 @@ public class SettingsControl : MonoBehaviour
     GameManager gameManager;
 
     [SerializeField]
+    BasketController basketManager;
+
+    [SerializeField]
     SettingType settingType;
 
     [SerializeField]
@@ -26,10 +29,19 @@ public class SettingsControl : MonoBehaviour
             case SettingType.Music:
                 settingMusic = !settingMusic;
                 upgradeButtonText.text = (settingMusic) ? "On" : "Off";
+                if (settingMusic)
+                {
+                    gameManager.audioPlayer.Play();
+                }
+                else
+                {
+                    gameManager.audioPlayer.Pause();
+                }
                 break;
             case SettingType.Sound:
                 settingSounds = !settingSounds;
                 upgradeButtonText.text = (settingSounds) ? "On" : "Off";
+                gameManager.sfcPlayer.mute = settingMusic;
                 break;
             case SettingType.Sensitivity:
                 if (settingSensitivity == 2)
@@ -41,6 +53,7 @@ public class SettingsControl : MonoBehaviour
                     settingSensitivity += 1;
                 }
                 upgradeButtonText.text = sensitivityNames[settingSensitivity];
+                basketManager.SetBasketSensitiivty(settingSensitivity);
                 break;
         }
     }

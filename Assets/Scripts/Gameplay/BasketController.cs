@@ -9,8 +9,13 @@ public class BasketController : MonoBehaviour
     public bool GameRunning = true;
 
     [SerializeField]
+    FruitSpawner spawner;
+
+    [SerializeField]
     private float baseSpeed = 5.0f;
     public float speed = 5f;
+
+    public float basketSensitivity = 1f;
 
     private float adjustedScale = 0.0f;
 
@@ -26,6 +31,9 @@ public class BasketController : MonoBehaviour
     // Managers
     [SerializeField]
     private ScoringManager scoringManager;
+
+    [SerializeField]
+    private GameManager gameManager;
 
     float lastPinchDist;
     bool hadLastPinch = false;
@@ -59,6 +67,22 @@ public class BasketController : MonoBehaviour
         speed = baseSpeed + level;
     }
 
+    public void SetBasketSensitiivty(float sensitivity)
+    {
+        if (sensitivity == 0)
+        {
+            basketSensitivity = 0.5f;
+        }
+        else if (sensitivity == 1) 
+        {
+            basketSensitivity = 1f;
+        }
+        else if (sensitivity == 2)
+        {
+            basketSensitivity = 1.5f;
+        }
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -70,8 +94,10 @@ public class BasketController : MonoBehaviour
         // Set initial values
         Vector3 newPos = transform.position;
         m_moveAmt = m_moveAction.ReadValue<Vector2>();
-        m_accelerationX = Accelerometer.current.acceleration.ReadValue().x;
-        Debug.Log(Accelerometer.current.acceleration.ReadValue());
+        if (Accelerometer.current != null)
+        {
+            m_accelerationX = Accelerometer.current.acceleration.ReadValue().x * basketSensitivity;
+        }
 
         // Do the magic (movement)
         if (Mathf.Abs(m_accelerationX) > 0.1) // 0.1 here is a cutoff so that the basket would not drift
@@ -85,14 +111,14 @@ public class BasketController : MonoBehaviour
         }
 
         // Commented out the touch input for moving basket (defeats purpose)
-        /*
+        
         if (primaryTouchHold.ReadValue<float>() > 0)
         {
             Vector2 touchPos = primaryTouch.ReadValue<Vector2>();
             float direction = (touchPos.x < Screen.width * 0.5f) ? -1f : 1f;
             newPos = transform.position + Vector3.right * direction * speed * Time.deltaTime;
         }
-        */
+        
 
         newPos.x = Mathf.Clamp(newPos.x, -2.3f, 2.3f);
         transform.position = newPos;
@@ -137,13 +163,14 @@ public class BasketController : MonoBehaviour
         if (collision.CompareTag("FallingItem"))
         {
             scoringManager.ItemCaught(transform.localScale.x - adjustedScale);
+            spawner.UpdateSpawningInterval(false);
+            gameManager.PlaySFX(SoundType.Good);
         }
         else if (collision.CompareTag("FallingTrash"))
         {
             scoringManager.TrashCaught();
+            gameManager.PlaySFX(SoundType.Bad);
         }
         Destroy(collision.gameObject);
     }
- 
-
 }

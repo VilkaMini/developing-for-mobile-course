@@ -17,6 +17,8 @@ public class FruitSpawner : MonoBehaviour
 
     public GameObject currentItem;
 
+    public float spawningInterval = 3;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -32,6 +34,18 @@ public class FruitSpawner : MonoBehaviour
     private Sprite DetermineSpawnItem()
     {
         return itemSprites[Random.Range(0, itemSprites.Count)];
+    }
+
+    public void UpdateSpawningInterval(bool reset)
+    {
+        if (reset)
+        {
+            spawningInterval = 3f;
+        }
+        if (spawningInterval > 0.5) // Changed from .2 to 0.5
+        {
+            spawningInterval -= 0.1f;
+        }
     }
 
     private IEnumerator SpawnItem()
@@ -57,7 +71,7 @@ public class FruitSpawner : MonoBehaviour
                 item.transform.Rotate(0f, 0f, Random.Range(-180, 180));                           // ADDED FROM FEEDBACK
 
                 currentItem = item;
-                yield return new WaitForSeconds(2);
+                yield return new WaitForSeconds(spawningInterval);
             }
             else
             {

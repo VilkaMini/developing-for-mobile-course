@@ -17,6 +17,12 @@ public enum SettingType
     Sensitivity
 }
 
+public enum SoundType
+{
+    Good,
+    Bad
+}
+
 public class GameManager : MonoBehaviour
 {
     [SerializeField]
@@ -35,6 +41,9 @@ public class GameManager : MonoBehaviour
     GameObject settingsMenuUI;
 
     [SerializeField]
+    GameObject tutorialMenuUI;
+
+    [SerializeField]
     FruitSpawner fruitSpawner;
 
     [SerializeField]
@@ -45,6 +54,17 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] 
     UnityAdsManager adManager;
+
+    [SerializeField]
+    public AudioSource audioPlayer;
+
+    [SerializeField]
+    public AudioSource sfcPlayer;
+
+    [SerializeField]
+    AudioClip goodSound;
+    [SerializeField]
+    AudioClip badSound;
 
     [SerializeField]
     Dictionary<UpgradeType, int> upgradeCounts = new Dictionary<UpgradeType, int>();
@@ -61,6 +81,20 @@ public class GameManager : MonoBehaviour
         upgradeCounts.Add(UpgradeType.Speed, 0);
         upgradeCounts.Add(UpgradeType.Hearts, 0);
         upgradeCounts.Add(UpgradeType.Multiplier, 0);
+    }
+
+    public void PlaySFX(SoundType sound)
+    {
+        switch (sound)
+        {
+            case SoundType.Good:
+
+                sfcPlayer.PlayOneShot(goodSound, 1);
+                break;
+            case SoundType.Bad:
+                sfcPlayer.PlayOneShot(badSound, 1);
+                break;
+        }
     }
 
     public void StopGame()
@@ -91,6 +125,7 @@ public class GameManager : MonoBehaviour
         adManager.LoadAd();
         basketController.RunLogic(false);
         fruitSpawner.RunLogic(false);
+        fruitSpawner.UpdateSpawningInterval(true);
         if (fruitSpawner.currentItem)
         {
             Destroy(fruitSpawner.currentItem);
@@ -117,6 +152,11 @@ public class GameManager : MonoBehaviour
     public void ToggleMainMenu(bool open)
     {
         standardMenuUI.SetActive(open);
+    }
+
+    public void ToggleTutorial(bool open)
+    {
+        tutorialMenuUI.SetActive(open);
     }
 
     public void ToggleAddScreen(bool open)
